@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Evel-Map}",
+            "name": "Debug Elev-Map",
+            "target": "Elev-Map",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug Elev-Map"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Evel-Map}",
+            "name": "Release Elev-Map",
+            "target": "Elev-Map",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release Elev-Map"
+        }
+    ]
+}
