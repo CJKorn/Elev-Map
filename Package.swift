@@ -1,20 +1,22 @@
 // swift-tools-version: 6.3
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
 import PackageDescription
 
+// ElevMapKit: platform-agnostic terrain pipeline.
+//
+// Nothing in this package depends on a server framework, MapKit, or RealityKit.
+// It builds unchanged for visionOS and for Linux; the web demo lives in its own
+// package under Demo/ so that its dependencies never enter this graph.
 let package = Package(
-    name: "Elev-Map",
+    name: "ElevMapKit",
+    platforms: [
+        .visionOS(.v2), .iOS(.v17), .macOS(.v14),
+    ],
+    products: [
+        .library(name: "ElevMapKit", targets: ["ElevMapCore"]),
+    ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "Elev-Map"
-        ),
-        .testTarget(
-            name: "Elev-MapTests",
-            dependencies: ["Elev-Map"]
-        ),
+        // Domain types and mesh generation. No I/O.
+        .target(name: "ElevMapCore"),
     ],
     swiftLanguageModes: [.v6]
 )
