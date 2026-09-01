@@ -12,11 +12,16 @@ let package = Package(
         .visionOS(.v2), .iOS(.v17), .macOS(.v14),
     ],
     products: [
-        .library(name: "ElevMapKit", targets: ["ElevMapCore"]),
+        .library(name: "ElevMapKit", targets: ["ElevMapCore", "ElevMapGeo"]),
     ],
     targets: [
+        .systemLibrary(name: "CZLib", path: "Sources/CZLib"),
+
         // Domain types and mesh generation. No I/O.
         .target(name: "ElevMapCore"),
+
+        // Cloud-Optimized GeoTIFF reading: IFD parsing, tile decode.
+        .target(name: "ElevMapGeo", dependencies: ["ElevMapCore", "CZLib"]),
     ],
     swiftLanguageModes: [.v6]
 )
