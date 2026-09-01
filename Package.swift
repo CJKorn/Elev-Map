@@ -12,7 +12,7 @@ let package = Package(
         .visionOS(.v2), .iOS(.v17), .macOS(.v14),
     ],
     products: [
-        .library(name: "ElevMapKit", targets: ["ElevMapCore", "ElevMapGeo"]),
+        .library(name: "ElevMapKit", targets: ["ElevMapCore", "ElevMapGeo", "ElevMapProviders"]),
     ],
     targets: [
         .systemLibrary(name: "CZLib", path: "Sources/CZLib"),
@@ -22,6 +22,9 @@ let package = Package(
 
         // Cloud-Optimized GeoTIFF reading: IFD parsing, tile decode.
         .target(name: "ElevMapGeo", dependencies: ["ElevMapCore", "CZLib"]),
+
+        // Concrete DEM/imagery sources plus the URLSession range reader.
+        .target(name: "ElevMapProviders", dependencies: ["ElevMapCore", "ElevMapGeo"]),
     ],
     swiftLanguageModes: [.v6]
 )
