@@ -13,6 +13,8 @@ let package = Package(
     ],
     products: [
         .library(name: "ElevMapKit", targets: ["ElevMapCore", "ElevMapGeo", "ElevMapProviders"]),
+        .library(name: "ElevMapExport", targets: ["ElevMapExport"]),
+        .library(name: "ElevMapRealityKit", targets: ["ElevMapRealityKit"]),
     ],
     targets: [
         .systemLibrary(name: "CZLib", path: "Sources/CZLib"),
@@ -25,6 +27,14 @@ let package = Package(
 
         // Concrete DEM/imagery sources plus the URLSession range reader.
         .target(name: "ElevMapProviders", dependencies: ["ElevMapCore", "ElevMapGeo"]),
+
+        // TerrainModel -> glTF binary. Used by the demo; harmless on device.
+        .target(name: "ElevMapExport", dependencies: ["ElevMapCore"]),
+
+        // MapKit and RealityKit glue for the visionOS app. Compiles to an
+        // empty module anywhere those frameworks do not exist, so the package
+        // still builds on Linux for the demo.
+        .target(name: "ElevMapRealityKit", dependencies: ["ElevMapCore"]),
     ],
     swiftLanguageModes: [.v6]
 )
