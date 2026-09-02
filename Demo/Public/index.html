@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elev-Map Demo</title>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="/css/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🏔️</text></svg>">
+<script type="importmap">
+{ "imports": { "three": "/vendor/three/three.module.js" } }
+</script>
+</head>
+<body>
+
+<!-- ───────────────────────────── Step 1 · choose an area ───────────────────────────── -->
+<section class="screen is-active" id="screen-picker">
+  <div id="map" aria-label="Map for choosing an area"></div>
+
+  <aside class="panel panel--picker">
+    <header class="panel__head">
+      <h1>Elev-Map</h1>
+      <p class="tagline">Drag a box to build a textured 3D model of the ground from
+        public elevation data.</p>
+    </header>
+
+    <div class="field">
+      <label>Selected area</label>
+      <div id="selection-readout" class="readout readout--empty">
+        Drag a box on the map to choose an area.
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="preset">Jump to</label>
+      <select id="preset">
+        <option value="">Choose a place…</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="dataset">Elevation dataset</label>
+      <select id="dataset"></select>
+      <p class="dataset-note" id="dataset-note"></p>
+    </div>
+
+    <div class="field">
+      <label>Sampling <span class="hint" id="resolution-hint"></span></label>
+      <p class="dataset-note">One vertex per DEM sample, straight from the source
+        raster — nothing is resampled on the way through.</p>
+    </div>
+
+    <div class="field">
+      <label for="texture">Satellite texture</label>
+      <select id="texture">
+        <option value="4096">Sharpest available</option>
+        <option value="2048">2048 px</option>
+        <option value="1024">1024 px</option>
+        <option value="0">None</option>
+      </select>
+    </div>
+
+    <button id="build" class="btn btn--primary" disabled>Build 3D model</button>
+    <p class="note" id="picker-note"></p>
+
+    <footer class="panel__foot">
+      Elevation © Copernicus / ESA, Geoscience Australia, and NSW Spatial Services.
+      Map data © OpenStreetMap contributors. Imagery © Esri, Maxar, Earthstar Geographics.
+    </footer>
+  </aside>
+</section>
+
+<!-- ───────────────────────────── Step 2 · loading ───────────────────────────── -->
+<section class="screen" id="screen-loading">
+  <div class="loader">
+    <div class="loader__title">Building your model</div>
+    <div class="loader__area" id="loading-area"></div>
+
+    <div class="bar"><div class="bar__fill" id="loading-bar"></div></div>
+    <div class="loader__status" id="loading-status">Starting…</div>
+
+    <ul class="steps">
+      <li id="step-dem"><span class="dot"></span>Reading elevation tiles</li>
+      <li id="step-tex"><span class="dot"></span>Fetching satellite imagery</li>
+      <li id="step-mesh"><span class="dot"></span>Building the mesh</li>
+      <li id="step-load"><span class="dot"></span>Loading it into the viewer</li>
+    </ul>
+
+    <button id="loading-cancel" class="btn btn--ghost">Cancel</button>
+    <p class="loader__error" id="loading-error"></p>
+  </div>
+</section>
+
+<!-- ───────────────────────────── Step 3 · 3D viewer ───────────────────────────── -->
+<section class="screen" id="screen-viewer">
+  <div id="viewport"></div>
+
+  <aside class="panel panel--hud">
+    <header class="panel__head">
+      <h2 id="viewer-title">Model</h2>
+      <p class="tagline" id="viewer-extent"></p>
+    </header>
+
+    <div class="field">
+      <label>Surface</label>
+      <div class="segmented" id="surface-mode">
+        <button data-mode="satellite" class="is-active">Satellite</button>
+        <button data-mode="shaded">Shaded</button>
+        <button data-mode="wireframe">Wireframe</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="exaggeration">Vertical exaggeration <span class="hint" id="exag-hint">1.00×</span></label>
+      <input type="range" id="exaggeration" min="0" max="200" step="1" value="100">
+      <p class="dataset-note">Applied live in the viewer — no rebuild.</p>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <p class="caveat">
+      Vertices are in <b>metres</b> in a local east/north/up frame, exactly as the
+      visionOS app receives them. The viewer scales the model down to fit the camera;
+      on a headset it would sit at true scale over the map.
+    </p>
+
+    <button id="back" class="btn btn--ghost">Choose another area</button>
+  </aside>
+
+  <div class="viewer-help">drag to orbit · scroll to zoom · right-drag to pan</div>
+</section>
+
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
